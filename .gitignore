@@ -1,0 +1,11 @@
+# Ignore raw data files
+*.csv
+*.parquet
+
+# Ignore Python cache & virtual environments
+__pycache__/
+*.pyc
+.venv/
+venv/
+.idea/
+.vscode/
