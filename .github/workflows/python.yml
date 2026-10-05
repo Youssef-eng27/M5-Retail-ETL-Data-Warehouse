@@ -1,0 +1,95 @@
+# ============================================================
+# GitHub Actions Workflow
+# ============================================================
+
+# The name displayed for this workflow in GitHub Actions
+name: Python CI
+
+
+# ============================================================
+# WHEN SHOULD THIS WORKFLOW RUN?
+# ============================================================
+
+# Run the workflow whenever code is pushed to the main branch
+on:
+  push:
+    branches:
+      - main
+
+
+# ============================================================
+# JOBS
+# ============================================================
+
+# Jobs contain the main tasks that GitHub Actions will execute
+jobs:
+
+  # Name of the job
+  python-check:
+
+    # ========================================================
+    # RUNNER
+    # ========================================================
+
+    # Use a GitHub-hosted Ubuntu runner to execute this job
+    runs-on: ubuntu-latest
+
+
+    # ========================================================
+    # STEPS
+    # ========================================================
+
+    # Steps are executed sequentially from top to bottom
+    steps:
+
+      # ------------------------------------------------------
+      # STEP 1: Checkout Repository
+      # ------------------------------------------------------
+
+      # Download the repository files to the runner
+      # so the following steps can access the project code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      # ------------------------------------------------------
+      # STEP 2: Set Up Python
+      # ------------------------------------------------------
+
+      # Install and configure Python on the runner
+      - name: Set up Python
+        uses: actions/setup-python@v5
+
+        # Specify the Python version to use
+        with:
+          python-version: "3.12"
+
+
+      # ------------------------------------------------------
+      # STEP 3: Install Dependencies
+      # ------------------------------------------------------
+
+      # Install all Python packages listed in requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+
+      # ------------------------------------------------------
+      # STEP 4: Check Python
+      # ------------------------------------------------------
+
+      # Verify that Python was installed and configured correctly
+      - name: Check Python
+        run: python --version
+
+      # STEP 5: Run Unit Tests
+      - name: Run Tests
+        run: pytest
+      # STEP 6: Code Linting
+      - name: Lint with Flake8
+        run: |
+          pip install flake8
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics    
+      # STEP 7: Run Data Audit Pipeline Check
+      - name: Run Data Audit Script
+        run: python scripts/data_audit.py    
